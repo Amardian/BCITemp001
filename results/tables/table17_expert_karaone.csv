@@ -1,0 +1,9 @@
+metric,value
+ECE (uncalibrated),0.10907303379929584
+ECE (temperature-scaled),0.0787896921602779
+Conformal coverage (alpha=0.1),87.95986622073578
+Abstention rate (%),41.137123745819395
+Committed-trial accuracy (%),95.45454545454545
+Raw classifier accuracy (%),81.93979933110369
+Temperature T_cal,2.832956552505493
+Conformal threshold tau_alpha,0.7815579771995544

@@ -1,0 +1,9 @@
+configuration,size_mb,params_m,latency_ms,latency_p99_ms,accuracy,acc_drop,csi
+Full Model (FP32),8.702,2.281,11.17,35.81,80.94,0.0,1.0
+Pruned (L1-only),8.136,2.133,9.58,34.42,80.6,-0.33,0.808
+Pruned + PTQ (INT8),2.034,2.133,14.1,37.99,80.27,-0.67,0.807
+Pruned + QAT (INT8),2.034,2.133,14.52,38.58,81.27,0.33,0.79
+NAP only (proposed),8.136,2.133,10.62,35.91,82.27,1.34,0.728
+NAP + QAT,2.034,2.133,15.22,38.77,81.94,1.0,0.708
+NAP + QAT + SPKD (Full NAC),2.034,2.133,16.29,39.72,81.94,1.0,0.907
+Lottery Ticket (init prune),8.136,2.133,9.98,34.75,72.91,-8.03,-0.398

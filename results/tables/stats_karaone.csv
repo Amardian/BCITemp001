@@ -1,0 +1,7 @@
+test,statistic,p,detail
+Non-inferiority (delta=1%),0.009390935319377356,,"CI_low=-0.0055, noninferior=True"
+Wilcoxon signed-rank (full vs NAC),3.0,0.22491588401596185,subject-level paired accuracies
+Cohen's d_z (accuracy drop),0.4011738526643794,,paired per-subject
+CSI bootstrap (NAC),0.9073721170425415,,"BCa 95% CI (0.895, 0.913)"
+SPR bootstrap (NAC),1.0024367570877075,,"95% CI (0.995, 1.010)"
+Permutation (TF null),2.827122688293457,0.004975124378109453,observed=0.2105

@@ -1,0 +1,14 @@
+method,metric,value
+Integrated Gradients,"Spearman(IG, Grad-CAM)",0.11
+EigenCAM,"Spearman(EigenCAM, Grad-CAM)",0.124
+Conditional permutation,top-5 channels,"CP1,CP3,C3,Cz,C4"
+Conditional permutation,max accuracy drop (pp),7.81
+Causal ablation (dose-response),acc drop k=5 top channels (pp),22.4
+Causal ablation (dose-response),acc drop k=5 random channels (pp),7.29
+TF null (band-shuffled),ROI mu/beta mass (observed),0.2105
+TF null (band-shuffled),z-score vs null,2.83
+TF null (band-shuffled),p-value,0.004975124378109453
+Adebayo sanity (full rand),"Spearman(orig, randomized)",-0.088
+Adebayo sanity (cascade rand),"Spearman(orig, randomized)",-0.108
+Neuro ground truth,"Jaccard(top-33%, ROI) compressed",0.194
+Neuro ground truth,"Jaccard(top-33%, ROI) full",0.191

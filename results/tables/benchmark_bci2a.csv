@@ -1,0 +1,5 @@
+model,platform,latency_ms,p99_ms,throughput
+Full FP32 (teacher),host-CPU,4.42,30.53,226.2
+NAC (compressed),host-CPU,6.37,32.19,157.0
+NAC sustained,host-CPU,6.3,,
+NAC online (sliding window),host-CPU,,,

@@ -1,0 +1,6 @@
+ordering,accuracy,size_mb,csi,spr
+NAP -> QAT -> SPKD (proposed),81.94,2.034,0.907,1.002
+NAP -> SPKD -> QAT,82.61,2.034,0.921,0.997
+NAP -> QAT (no SPKD),81.94,2.034,0.708,0.919
+NAP -> QAT -> Hinton (beta=0),82.27,2.034,0.911,1.0
+No compression (full FP32),80.94,8.702,1.0,1.0

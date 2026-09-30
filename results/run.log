@@ -1,0 +1,262 @@
+NAC pipeline run  preset=demo  seed=42  datasets=karaone  stages=['teacher']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:09:29
+
+=== [karaone] Stage 1-2: data + CWT features ===
+  subjects=12  trials=1152 channels=64 freqs=16 times=16 classes=11 ROI=[np.str_('C3'), np.str_('C4'), np.str_('Cz'), np.str_('F7'), np.str_('FC5'), np.str_('FC1'), np.str_('FC3'), np.str_('CP1'), np.str_('CP3')]
+=== [karaone] Stage 3a: full FP32 teacher (CNN-GRU) ===
+  params=2.281M  size=8.70 MB (FP32)
+    epoch   1/12  loss 2.4735  train-acc 7.32%  val-acc 12.94%
+    epoch   2/12  loss 2.0532  train-acc 27.82%  val-acc 38.24%
+    epoch   3/12  loss 1.2922  train-acc 52.71%  val-acc 50.59%
+    epoch   4/12  loss 1.0444  train-acc 58.86%  val-acc 52.35%
+    epoch   5/12  loss 0.9162  train-acc 63.10%  val-acc 52.94%
+    epoch   6/12  loss 0.7719  train-acc 70.57%  val-acc 57.06%
+    epoch   7/12  loss 0.6252  train-acc 77.01%  val-acc 67.65%
+    epoch   8/12  loss 0.6332  train-acc 79.65%  val-acc 67.06%
+    epoch   9/12  loss 0.4001  train-acc 83.60%  val-acc 70.59%
+    epoch  10/12  loss 0.1780  train-acc 93.70%  val-acc 75.29%
+    epoch  11/12  loss 0.1203  train-acc 96.34%  val-acc 78.82%
+    epoch  12/12  loss 0.0568  train-acc 97.95%  val-acc 75.88%
+  teacher test accuracy = 80.94%  (chance 9.1%)
+  [Full FP32 (teacher)] acc=80.94%  size=8.70MB  CSI=1.000  SPR=1.000  lat=11.2ms
+NAC pipeline run  preset=demo  seed=42  datasets=karaone  stages=['nap']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:12:29
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)'] ===
+=== [karaone] Stage 3b: NAP (lambda=0.6, K=2, s=0.2) ===
+  [NAP nap] iter 1/2: kept 432/480 filters (90.0%)
+  [NAP nap] iter 2/2: kept 384/480 filters (80.0%)
+  [NAP only] acc=82.27%  size=8.14MB  CSI=0.728  SPR=0.927  lat=10.6ms
+=== [karaone] Stage 3c: INT8 QAT (b=8) ===
+  [NAP + QAT] acc=81.94%  size=2.03MB  CSI=0.708  SPR=0.919  lat=15.2ms
+NAC pipeline run  preset=demo  seed=42  datasets=karaone  stages=['distill']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:15:12
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT'] ===
+=== [karaone] Stage 3d: SPKD (alpha=0.3, beta=0.3, T=4.0) ===
+    SPKD epoch   1/5  L 0.1469  (CE 0.009  KL 0.023  SAL 0.0000)
+    SPKD epoch   2/5  L 0.0306  (CE 0.019  KL 0.004  SAL 0.0000)
+    SPKD epoch   3/5  L 0.0175  (CE 0.020  KL 0.002  SAL 0.0000)
+    SPKD epoch   4/5  L 0.0140  (CE 0.021  KL 0.001  SAL 0.0000)
+    SPKD epoch   5/5  L 0.0121  (CE 0.021  KL 0.001  SAL 0.0000)
+  [NAC (NAP+QAT+SPKD)] acc=81.94%  size=2.03MB  CSI=0.907  SPR=1.002  lat=16.3ms
+=== [karaone] SPKD ablation: Hinton KD (beta=0) ===
+    SPKD epoch   1/5  L 0.2460  (CE 0.008  KL 0.022  SAL 0.0000)
+    SPKD epoch   2/5  L 0.0548  (CE 0.021  KL 0.004  SAL 0.0000)
+    SPKD epoch   3/5  L 0.0272  (CE 0.021  KL 0.002  SAL 0.0000)
+    SPKD epoch   4/5  L 0.0196  (CE 0.022  KL 0.001  SAL 0.0000)
+    SPKD epoch   5/5  L 0.0156  (CE 0.023  KL 0.001  SAL 0.0000)
+  [NAP+QAT+Hinton (beta=0)] acc=82.27%  size=2.03MB  CSI=0.911  SPR=1.000  lat=15.3ms
+=== [karaone] Alternative ordering: NAP -> SPKD -> QAT ===
+    SPKD epoch   1/5  L 0.0725  (CE 0.013  KL 0.011  SAL 0.0000)
+    SPKD epoch   2/5  L 0.0210  (CE 0.021  KL 0.002  SAL 0.0000)
+    SPKD epoch   3/5  L 0.0133  (CE 0.022  KL 0.001  SAL 0.0000)
+    SPKD epoch   4/5  L 0.0113  (CE 0.023  KL 0.001  SAL 0.0000)
+    SPKD epoch   5/5  L 0.0103  (CE 0.024  KL 0.001  SAL 0.0000)
+  [NAP->SPKD->QAT] acc=82.61%  size=2.03MB  CSI=0.921  SPR=0.997  lat=17.2ms
+NAC pipeline run  preset=demo  seed=42  datasets=karaone  stages=['baselines']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:23:14
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT'] ===
+=== [karaone] Baseline: L1-only pruning ===
+  [L1] iter 1: kept 432/480
+  [L1] iter 2: kept 384/480
+  [L1-only prune] acc=80.60%  size=8.14MB  CSI=0.808  SPR=0.948  lat=9.6ms
+  [QAT] PTQ mode: quantization applied without fine-tuning
+  [L1 + PTQ] acc=80.27%  size=2.03MB  CSI=0.807  SPR=0.949  lat=14.1ms
+  [L1 + QAT] acc=81.27%  size=2.03MB  CSI=0.790  SPR=0.952  lat=14.5ms
+=== [karaone] Baseline: lottery-ticket hypothesis ===
+  [Lottery ticket] acc=72.91%  size=8.14MB  CSI=-0.398  SPR=0.859  lat=10.0ms
+NAC pipeline run  preset=demo  seed=42  datasets=karaone  stages=['tables', 'xai']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:26:31
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [karaone] Tables 6-7, 16 / Figures 2-3, 7a ===
+=== [karaone] Stage 4: multi-method XAI battery ===
+NAC pipeline run  preset=demo  seed=42  datasets=karaone  stages=['xai']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:30:24
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [karaone] Stage 4: multi-method XAI battery ===
+NAC pipeline run  preset=demo  seed=42  datasets=karaone  stages=['expert', 'bench', 'stats']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:33:41
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [karaone] Stages 4-6: expert-system decision layer ===
+  T_cal=0.018  ECE 0.109 -> 0.183  coverage=100.0%  committed-acc=0.0% (raw 81.9%)  abstention=100.0%
+  clinical decision examples: []
+=== [karaone] Stage 7: edge benchmarking (host CPU) ===
+  latency: full 10.9 ms  NAC 15.5 ms (p99 38.9)  drift +2.9%  online-acc 59.53%
+  ONNX export -> results/models_nac_karaone.onnx
+=== [karaone] Statistical validation (pre-registered) ===
+  non-inferior: True (mean diff +0.94pp, CI_low -0.55pp)  Wilcoxon p=0.225  d_z=0.40
+=== [karaone] Lightweight baselines (Fig 5) ===
+NAC pipeline run  preset=demo  seed=42  datasets=karaone  stages=['stats']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:34:41
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [karaone] Statistical validation (pre-registered) ===
+  non-inferior: True (mean diff +0.94pp, CI_low -0.55pp)  Wilcoxon p=0.225  d_z=0.40
+=== [karaone] Lightweight baselines (Fig 5) ===
+NAC pipeline run  preset=demo  seed=42  datasets=karaone  stages=['stats']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:35:18
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [karaone] Statistical validation (pre-registered) ===
+  non-inferior: True (mean diff +0.94pp, CI_low -0.55pp)  Wilcoxon p=0.225  d_z=0.40
+=== [karaone] Lightweight baselines (Fig 5) ===
+  EEGNet: acc=15.05%  size=0.009MB  params=2379
+  ShallowConvNet: acc=39.13%  size=0.056MB  params=14611
+=== [karaone] done (summary written to results) ===
+
+================ FINAL SUMMARY ================
+[karaone] teacher 80.9% @ 8.70MB  ->  NAC 81.9% @ 2.03MB (-76.6%) | CSI=0.907 | SPR=1.002 | coverage=100.0% @ committed-acc=0.0% | latency=15.5ms | online-acc=59.5%
+All outputs -> /home/z/my-project/work/NAC_Implementation/results
+NAC pipeline run  preset=demo  seed=42  datasets=karaone  stages=['expert', 'bench', 'stats']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:36:13
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [karaone] Stages 4-6: expert-system decision layer ===
+  T_cal=2.833  ECE 0.109 -> 0.079  coverage=88.0%  committed-acc=95.5% (raw 81.9%)  abstention=41.1%
+  clinical decision examples: [{"trial": 1, "pred": "u", "action": "spell:'U'"}, {"trial": 2, "pred": "sh", "action": "spell:'SH'"}, {"trial": 3, "pred": "a", "action": "spell:'A'"}, {"trial": 4, "pred": "a", "action": "spell:'A'"}, {"trial": 5, "pred": "a", "action": "spell:'A'"}]
+=== [karaone] Stage 7: edge benchmarking (host CPU) ===
+  latency: full 11.1 ms  NAC 15.3 ms (p99 38.9)  drift +5.3%  online-acc 59.53%
+  ONNX export -> results/models_nac_karaone.onnx
+=== [karaone] Statistical validation (pre-registered) ===
+  non-inferior: True (mean diff +0.94pp, CI_low -0.55pp)  Wilcoxon p=0.225  d_z=0.40
+=== [karaone] Lightweight baselines (Fig 5) ===
+  EEGNet: acc=14.72%  size=0.009MB  params=2379
+  ShallowConvNet: acc=39.13%  size=0.056MB  params=14611
+=== [karaone] done (summary written to results) ===
+
+================ FINAL SUMMARY ================
+[karaone] teacher 80.9% @ 8.70MB  ->  NAC 81.9% @ 2.03MB (-76.6%) | CSI=0.907 | SPR=1.002 | coverage=88.0% @ committed-acc=95.5% | latency=15.3ms | online-acc=59.5%
+All outputs -> /home/z/my-project/work/NAC_Implementation/results
+NAC pipeline run  preset=demo  seed=42  datasets=bci2a  stages=['teacher', 'nap']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:37:19
+
+=== [bci2a] Stage 1-2: data + CWT features ===
+  subjects=9  trials=864 channels=22 freqs=16 times=16 classes=4 ROI=[np.str_('C3'), np.str_('C4'), np.str_('Cz'), np.str_('FC5'), np.str_('FC1'), np.str_('FC3'), np.str_('CP1'), np.str_('CP3')]
+=== [bci2a] Stage 3a: full FP32 teacher (CNN-GRU) ===
+  params=1.204M  size=4.59 MB (FP32)
+    epoch   1/12  loss 0.9862  train-acc 51.36%  val-acc 75.78%
+    epoch   2/12  loss 0.4722  train-acc 77.52%  val-acc 78.91%
+    epoch   3/12  loss 0.3546  train-acc 80.81%  val-acc 80.47%
+    epoch   4/12  loss 0.3148  train-acc 84.11%  val-acc 78.12%
+    epoch   5/12  loss 0.3203  train-acc 81.78%  val-acc 84.38%
+    epoch   6/12  loss 0.3318  train-acc 86.82%  val-acc 82.81%
+    epoch   7/12  loss 0.3291  train-acc 82.36%  val-acc 89.84%
+    epoch   8/12  loss 0.2098  train-acc 89.53%  val-acc 92.97%
+    epoch   9/12  loss 0.1508  train-acc 93.99%  val-acc 96.09%
+    epoch  10/12  loss 0.0978  train-acc 96.12%  val-acc 98.44%
+    epoch  11/12  loss 0.0213  train-acc 99.22%  val-acc 100.00%
+    epoch  12/12  loss 0.0037  train-acc 100.00%  val-acc 100.00%
+  teacher test accuracy = 99.55%  (chance 25.0%)
+  [Full FP32 (teacher)] acc=99.55%  size=4.59MB  CSI=1.000  SPR=1.000  lat=4.5ms
+=== [bci2a] Stage 3b: NAP (lambda=0.6, K=2, s=0.2) ===
+  [NAP nap] iter 1/2: kept 432/480 filters (90.0%)
+  [NAP nap] iter 2/2: kept 384/480 filters (80.0%)
+  [NAP only] acc=99.55%  size=4.03MB  CSI=0.699  SPR=1.005  lat=4.4ms
+=== [bci2a] Stage 3c: INT8 QAT (b=8) ===
+  [NAP + QAT] acc=99.55%  size=1.01MB  CSI=0.695  SPR=0.994  lat=7.0ms
+
+================ FINAL SUMMARY ================
+[karaone] teacher 80.9% @ 8.70MB  ->  NAC 81.9% @ 2.03MB (-76.6%) | CSI=0.907 | SPR=1.002 | coverage=88.0% @ committed-acc=95.5% | latency=15.3ms | online-acc=59.5%
+All outputs -> /home/z/my-project/work/NAC_Implementation/results
+NAC pipeline run  preset=demo  seed=42  datasets=bci2a  stages=['distill', 'baselines']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:39:03
+=== [bci2a] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT'] ===
+=== [bci2a] Stage 3d: SPKD (alpha=0.3, beta=0.3, T=4.0) ===
+    SPKD epoch   1/5  L 0.1365  (CE 0.001  KL 0.021  SAL 0.0003)
+    SPKD epoch   2/5  L 0.0257  (CE 0.004  KL 0.004  SAL 0.0002)
+    SPKD epoch   3/5  L 0.0126  (CE 0.003  KL 0.002  SAL 0.0001)
+    SPKD epoch   4/5  L 0.0060  (CE 0.002  KL 0.001  SAL 0.0000)
+    SPKD epoch   5/5  L 0.0042  (CE 0.003  KL 0.001  SAL 0.0000)
+  [NAC (NAP+QAT+SPKD)] acc=99.55%  size=1.01MB  CSI=0.920  SPR=0.997  lat=7.2ms
+=== [bci2a] SPKD ablation: Hinton KD (beta=0) ===
+    SPKD epoch   1/5  L 0.2328  (CE 0.001  KL 0.021  SAL 0.0003)
+    SPKD epoch   2/5  L 0.0422  (CE 0.004  KL 0.004  SAL 0.0001)
+    SPKD epoch   3/5  L 0.0198  (CE 0.003  KL 0.002  SAL 0.0001)
+    SPKD epoch   4/5  L 0.0100  (CE 0.003  KL 0.001  SAL 0.0001)
+    SPKD epoch   5/5  L 0.0065  (CE 0.003  KL 0.001  SAL 0.0000)
+  [NAP+QAT+Hinton (beta=0)] acc=99.55%  size=1.01MB  CSI=0.912  SPR=0.991  lat=6.9ms
+=== [bci2a] Alternative ordering: NAP -> SPKD -> QAT ===
+    SPKD epoch   1/5  L 0.0796  (CE 0.001  KL 0.012  SAL 0.0002)
+    SPKD epoch   2/5  L 0.0147  (CE 0.003  KL 0.002  SAL 0.0001)
+    SPKD epoch   3/5  L 0.0069  (CE 0.003  KL 0.001  SAL 0.0000)
+    SPKD epoch   4/5  L 0.0035  (CE 0.003  KL 0.000  SAL 0.0000)
+    SPKD epoch   5/5  L 0.0027  (CE 0.004  KL 0.000  SAL 0.0000)
+  [NAP->SPKD->QAT] acc=99.55%  size=1.01MB  CSI=0.948  SPR=1.000  lat=7.7ms
+=== [bci2a] Baseline: L1-only pruning ===
+  [L1] iter 1: kept 432/480
+  [L1] iter 2: kept 384/480
+  [L1-only prune] acc=99.55%  size=4.03MB  CSI=0.786  SPR=1.017  lat=4.7ms
+  [QAT] PTQ mode: quantization applied without fine-tuning
+  [L1 + PTQ] acc=99.55%  size=1.01MB  CSI=0.787  SPR=1.017  lat=7.1ms
+  [L1 + QAT] acc=100.00%  size=1.01MB  CSI=0.750  SPR=1.018  lat=7.0ms
+=== [bci2a] Baseline: lottery-ticket hypothesis ===
+  [Lottery ticket] acc=79.55%  size=4.03MB  CSI=0.334  SPR=0.809  lat=4.5ms
+
+================ FINAL SUMMARY ================
+[karaone] teacher 80.9% @ 8.70MB  ->  NAC 81.9% @ 2.03MB (-76.6%) | CSI=0.907 | SPR=1.002 | coverage=88.0% @ committed-acc=95.5% | latency=15.3ms | online-acc=59.5%
+All outputs -> /home/z/my-project/work/NAC_Implementation/results
+NAC pipeline run  preset=demo  seed=42  datasets=bci2a  stages=['tables', 'xai', 'expert', 'bench', 'stats']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:42:04
+=== [bci2a] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [bci2a] Tables 6-7, 16 / Figures 2-3, 7a ===
+=== [bci2a] Stage 4: multi-method XAI battery ===
+=== [bci2a] Stages 4-6: expert-system decision layer ===
+  T_cal=0.112  ECE 0.007 -> 0.004  coverage=98.6%  committed-acc=99.5% (raw 99.5%)  abstention=0.9%
+  clinical decision examples: [{"trial": 0, "pred": "left_hand", "action": "cursor:LEFT"}, {"trial": 1, "pred": "left_hand", "action": "cursor:LEFT"}, {"trial": 3, "pred": "left_hand", "action": "cursor:LEFT"}, {"trial": 6, "pred": "left_hand", "action": "cursor:LEFT"}, {"trial": 7, "pred": "left_hand", "action": "cursor:LEFT"}]
+=== [bci2a] Stage 7: edge benchmarking (host CPU) ===
+  latency: full 4.4 ms  NAC 6.4 ms (p99 32.2)  drift -4.4%  online-acc 97.73%
+  ONNX export -> results/models_nac_bci2a.onnx
+=== [bci2a] Statistical validation (pre-registered) ===
+  non-inferior: True (mean diff +0.00pp, CI_low +0.00pp)  Wilcoxon p=1.000  d_z=0.00
+=== [bci2a] Lightweight baselines (Fig 5) ===
+  EEGNet: acc=53.18%  size=0.004MB  params=1140
+  ShallowConvNet: acc=86.36%  size=0.023MB  params=5924
+=== [bci2a] done (summary written to results) ===
+
+================ FINAL SUMMARY ================
+[bci2a] teacher 99.5% @ 4.59MB  ->  NAC 99.5% @ 1.01MB (-78.1%) | CSI=0.920 | SPR=0.997 | coverage=98.6% @ committed-acc=99.5% | latency=6.4ms | online-acc=97.7%
+[karaone] teacher 80.9% @ 8.70MB  ->  NAC 81.9% @ 2.03MB (-76.6%) | CSI=0.907 | SPR=1.002 | coverage=88.0% @ committed-acc=95.5% | latency=15.3ms | online-acc=59.5%
+All outputs -> /home/z/my-project/work/NAC_Implementation/results
+NAC pipeline run  preset=demo  seed=42  datasets=karaone,bci2a  stages=['stats']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:44:44
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [karaone] Statistical validation (pre-registered) ===
+  non-inferior: True (mean diff +0.94pp, CI_low -0.55pp)  Wilcoxon p=0.225  d_z=0.40
+=== [karaone] Lightweight baselines (Fig 5) ===
+  EEGNet: acc=16.72%  size=0.009MB  params=2379
+  ShallowConvNet: acc=40.80%  size=0.056MB  params=14611
+=== [karaone] done (summary written to results) ===
+=== [bci2a] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [bci2a] Statistical validation (pre-registered) ===
+  non-inferior: True (mean diff +0.00pp, CI_low +0.00pp)  Wilcoxon p=1.000  d_z=0.00
+=== [bci2a] Lightweight baselines (Fig 5) ===
+  EEGNet: acc=55.91%  size=0.004MB  params=1140
+  ShallowConvNet: acc=86.36%  size=0.023MB  params=5924
+=== [bci2a] done (summary written to results) ===
+
+================ FINAL SUMMARY ================
+[bci2a] teacher 99.5% @ 4.59MB  ->  NAC 99.5% @ 1.01MB (-78.1%) | CSI=0.920 | SPR=0.997 | coverage=98.6% @ committed-acc=99.5% | latency=6.4ms | online-acc=97.7%
+[karaone] teacher 80.9% @ 8.70MB  ->  NAC 81.9% @ 2.03MB (-76.6%) | CSI=0.907 | SPR=1.002 | coverage=88.0% @ committed-acc=95.5% | latency=15.3ms | online-acc=59.5%
+All outputs -> /home/z/my-project/work/NAC_Implementation/results
+NAC pipeline run  preset=demo  seed=42  datasets=karaone,bci2a  stages=['stats']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:45:28
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [karaone] Statistical validation (pre-registered) ===
+  non-inferior: True (mean diff +0.94pp, CI_low -0.55pp)  Wilcoxon p=0.225  d_z=0.40
+=== [karaone] Lightweight baselines (Fig 5) ===
+  EEGNet: acc=15.05%  size=0.009MB  params=2379
+  ShallowConvNet: acc=34.45%  size=0.056MB  params=14611
+=== [karaone] done (summary written to results) ===
+=== [bci2a] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [bci2a] Statistical validation (pre-registered) ===
+  non-inferior: True (mean diff +0.00pp, CI_low +0.00pp)  Wilcoxon p=1.000  d_z=0.00
+=== [bci2a] Lightweight baselines (Fig 5) ===
+  EEGNet: acc=48.64%  size=0.004MB  params=1140
+  ShallowConvNet: acc=88.18%  size=0.023MB  params=5924
+=== [bci2a] done (summary written to results) ===
+
+================ FINAL SUMMARY ================
+[bci2a] teacher 99.5% @ 4.59MB  ->  NAC 99.5% @ 1.01MB (-78.1%) | CSI=0.920 | SPR=0.997 | coverage=98.6% @ committed-acc=99.5% | latency=6.4ms | online-acc=97.7%
+[karaone] teacher 80.9% @ 8.70MB  ->  NAC 81.9% @ 2.03MB (-76.6%) | CSI=0.907 | SPR=1.002 | coverage=88.0% @ committed-acc=95.5% | latency=15.3ms | online-acc=59.5%
+All outputs -> /home/z/my-project/work/NAC_Implementation/results
+NAC pipeline run  preset=demo  seed=42  datasets=karaone,bci2a  stages=['stats']  torch=2.14.0+cpu  threads=2  start=2026-09-29 21:46:17
+=== [karaone] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [karaone] Statistical validation (pre-registered) ===
+  non-inferior: True (mean diff +0.94pp, CI_low -0.55pp)  Wilcoxon p=0.225  d_z=0.40
+=== [karaone] Lightweight baselines (Fig 5) ===
+  EEGNet: acc=15.38%  size=0.009MB  params=2379
+  ShallowConvNet: acc=42.14%  size=0.056MB  params=14611
+=== [karaone] done (summary written to results) ===
+=== [bci2a] loaded checkpoint with variants: ['Full FP32 (teacher)', 'NAP only', 'NAP + QAT', 'NAC (NAP+QAT+SPKD)', 'NAP+QAT+Hinton (beta=0)', 'NAP->SPKD->QAT', 'L1-only prune', 'L1 + PTQ', 'L1 + QAT', 'Lottery ticket'] ===
+=== [bci2a] Statistical validation (pre-registered) ===
+  non-inferior: True (mean diff +0.00pp, CI_low +0.00pp)  Wilcoxon p=1.000  d_z=0.00
+=== [bci2a] Lightweight baselines (Fig 5) ===
+  EEGNet: acc=55.91%  size=0.004MB  params=1140
+  ShallowConvNet: acc=78.18%  size=0.023MB  params=5924
+=== [bci2a] done (summary written to results) ===
+
+================ FINAL SUMMARY ================
+[bci2a] teacher 99.5% @ 4.59MB  ->  NAC 99.5% @ 1.01MB (-78.1%) | CSI=0.920 | SPR=0.997 | coverage=98.6% @ committed-acc=99.5% | latency=6.4ms | online-acc=97.7%
+[karaone] teacher 80.9% @ 8.70MB  ->  NAC 81.9% @ 2.03MB (-76.6%) | CSI=0.907 | SPR=1.002 | coverage=88.0% @ committed-acc=95.5% | latency=15.3ms | online-acc=59.5%
+All outputs -> /home/z/my-project/work/NAC_Implementation/results

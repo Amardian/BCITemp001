@@ -1,0 +1,342 @@
+{
+  "dataset": "bci2a",
+  "preset": "demo",
+  "seed": 42,
+  "n_subjects": 9,
+  "n_trials": 864,
+  "n_channels": 22,
+  "n_classes": 4,
+  "teacher": {
+    "params": 1203908,
+    "size_mb": 4.5925445556640625,
+    "accuracy": 99.54545454545455
+  },
+  "nac": {
+    "params": 1055542,
+    "size_mb": 1.006856918334961,
+    "accuracy": 99.54545454545455,
+    "size_reduction_pct": 78.07627327005054,
+    "csi": 0.9197111129760742,
+    "csi_s": 0.9785710556359792,
+    "spr": 0.9974045753479004,
+    "latency_ms": 6.368260370031749,
+    "sustained_drift_pct": -4.379633576617958,
+    "online_accuracy": 0.9772727272727273
+  },
+  "expert_layer": {
+    "temperature": 0.11164139211177826,
+    "tau_alpha": 0.0,
+    "ece_uncalibrated": 0.006793300130150556,
+    "ece_calibrated": 0.004455332322554129,
+    "conformal_coverage": 98.63636363636363,
+    "abstention_rate": 0.9090909090909038,
+    "committed_accuracy": 99.54128440366972,
+    "raw_accuracy": 99.54545454545455,
+    "n_committed": 218,
+    "sweep": [
+      {
+        "tau_commit": 0.5,
+        "coverage": 99.0909090909091,
+        "committed_accuracy": 99.54128440366972,
+        "abstention": 0.9090909090909038
+      },
+      {
+        "tau_commit": 0.6,
+        "coverage": 99.0909090909091,
+        "committed_accuracy": 99.54128440366972,
+        "abstention": 0.9090909090909038
+      },
+      {
+        "tau_commit": 0.7,
+        "coverage": 99.0909090909091,
+        "committed_accuracy": 99.54128440366972,
+        "abstention": 0.9090909090909038
+      },
+      {
+        "tau_commit": 0.8,
+        "coverage": 99.0909090909091,
+        "committed_accuracy": 99.54128440366972,
+        "abstention": 0.9090909090909038
+      },
+      {
+        "tau_commit": 0.9,
+        "coverage": 99.0909090909091,
+        "committed_accuracy": 99.54128440366972,
+        "abstention": 0.9090909090909038
+      }
+    ]
+  },
+  "xai": {
+    "jaccard_compressed": 0.5319771137952957,
+    "jaccard_full": 0.546739245602882,
+    "ig_gradcam_spearman": 0.3809603510191469,
+    "eigencam_spearman": 0.2600572865820566,
+    "tf_null": {
+      "observed": 0.39140987396240234,
+      "null_mean": 0.22721950709819794,
+      "null_std": 0.05033959075808525,
+      "z": 3.261654853820801,
+      "p": 0.004975124378109453,
+      "n_shuffles": 200
+    },
+    "adebayo_full": {
+      "mode": "full",
+      "spearman_mean": 0.715669071217844,
+      "spearman_std": 0.08587136238048511
+    },
+    "adebayo_cascade": {
+      "mode": "cascade",
+      "spearman_mean": 0.005643086863395432,
+      "spearman_std": 0.0447906134018395
+    },
+    "dose_response": {
+      "top": [
+        0.005208333333333259,
+        0.03125,
+        0.08333333333333326,
+        0.109375,
+        0.22395833333333326,
+        0.26041666666666663,
+        0.30208333333333326,
+        0.30729166666666663,
+        0.33854166666666663,
+        0.375
+      ],
+      "bottom": [
+        0.005208333333333259,
+        0.005208333333333259,
+        0.02083333333333326,
+        0.02083333333333326,
+        0.02604166666666663,
+        0.04166666666666663,
+        0.04166666666666663,
+        0.0625,
+        0.06770833333333326,
+        0.09375
+      ],
+      "random": [
+        0.005208333333333259,
+        0.005208333333333259,
+        0.02083333333333326,
+        0.02083333333333326,
+        0.046875,
+        0.046875,
+        0.078125,
+        0.09375,
+        0.140625,
+        0.140625
+      ]
+    },
+    "perm_top": [
+      "CP1",
+      "FC3",
+      "FC1",
+      "FC5",
+      "CP3"
+    ],
+    "perm_max_drop_pp": 7.8125
+  },
+  "statistics": {
+    "noninferiority": {
+      "mean": 0.0,
+      "ci_low": 0.0,
+      "margin": -0.01,
+      "noninferior": true
+    },
+    "wilcoxon": {
+      "statistic": 0.0,
+      "p": 1.0
+    },
+    "cohens_dz": 0.0
+  },
+  "benchmark": {
+    "teacher_latency": {
+      "mean_ms": 4.421776155004409,
+      "std_ms": 5.555583992485893,
+      "p95_ms": 4.017113799727667,
+      "p99_ms": 30.52841472995169,
+      "throughput_per_s": 226.15346524681843,
+      "n_runs": 200,
+      "warmup": 20
+    },
+    "nac_latency": {
+      "mean_ms": 6.368260370031749,
+      "std_ms": 6.363815402454754,
+      "p95_ms": 30.743108300293898,
+      "p99_ms": 32.19011257063357,
+      "throughput_per_s": 157.02875540483194,
+      "n_runs": 200,
+      "warmup": 20
+    },
+    "sustained": {
+      "runs": 300,
+      "first100_ms": 6.588128319972384,
+      "last100_ms": 6.299592440000197,
+      "drift_pct": -4.379633576617958
+    },
+    "online": {
+      "online_accuracy": 0.9772727272727273,
+      "n_windows": 5,
+      "window_len": 8,
+      "step": 2,
+      "starts": [
+        0,
+        2,
+        4,
+        6,
+        8
+      ]
+    }
+  },
+  "clinical_examples": [
+    {
+      "trial": 0,
+      "pred": "left_hand",
+      "action": "cursor:LEFT"
+    },
+    {
+      "trial": 1,
+      "pred": "left_hand",
+      "action": "cursor:LEFT"
+    },
+    {
+      "trial": 3,
+      "pred": "left_hand",
+      "action": "cursor:LEFT"
+    },
+    {
+      "trial": 6,
+      "pred": "left_hand",
+      "action": "cursor:LEFT"
+    },
+    {
+      "trial": 7,
+      "pred": "left_hand",
+      "action": "cursor:LEFT"
+    }
+  ],
+  "table6": [
+    {
+      "configuration": "Full Model (FP32)",
+      "size_mb": 4.593,
+      "params_m": 1.204,
+      "latency_ms": 4.49,
+      "latency_p99_ms": 30.53,
+      "accuracy": 99.55,
+      "acc_drop": 0.0,
+      "csi": 1.0
+    },
+    {
+      "configuration": "Pruned (L1-only)",
+      "size_mb": 4.027,
+      "params_m": 1.056,
+      "latency_ms": 4.68,
+      "latency_p99_ms": 30.62,
+      "accuracy": 99.55,
+      "acc_drop": 0.0,
+      "csi": 0.786
+    },
+    {
+      "configuration": "Pruned + PTQ (INT8)",
+      "size_mb": 1.007,
+      "params_m": 1.056,
+      "latency_ms": 7.09,
+      "latency_p99_ms": 32.37,
+      "accuracy": 99.55,
+      "acc_drop": 0.0,
+      "csi": 0.787
+    },
+    {
+      "configuration": "Pruned + QAT (INT8)",
+      "size_mb": 1.007,
+      "params_m": 1.056,
+      "latency_ms": 7.01,
+      "latency_p99_ms": 32.51,
+      "accuracy": 100.0,
+      "acc_drop": 0.45,
+      "csi": 0.75
+    },
+    {
+      "configuration": "NAP only (proposed)",
+      "size_mb": 4.027,
+      "params_m": 1.056,
+      "latency_ms": 4.39,
+      "latency_p99_ms": 30.52,
+      "accuracy": 99.55,
+      "acc_drop": 0.0,
+      "csi": 0.699
+    },
+    {
+      "configuration": "NAP + QAT",
+      "size_mb": 1.007,
+      "params_m": 1.056,
+      "latency_ms": 7.0,
+      "latency_p99_ms": 32.2,
+      "accuracy": 99.55,
+      "acc_drop": 0.0,
+      "csi": 0.695
+    },
+    {
+      "configuration": "NAP + QAT + SPKD (Full NAC)",
+      "size_mb": 1.007,
+      "params_m": 1.056,
+      "latency_ms": 7.25,
+      "latency_p99_ms": 32.48,
+      "accuracy": 99.55,
+      "acc_drop": 0.0,
+      "csi": 0.92
+    },
+    {
+      "configuration": "Lottery Ticket (init prune)",
+      "size_mb": 4.026,
+      "params_m": 1.055,
+      "latency_ms": 4.46,
+      "latency_p99_ms": 29.67,
+      "accuracy": 79.55,
+      "acc_drop": -20.0,
+      "csi": 0.334
+    }
+  ],
+  "table16": [
+    {
+      "stage": "Full model (FP32)",
+      "csi": 1.0,
+      "csi_ci": "(1.000, 1.000)",
+      "csi_s": 1.0,
+      "spr": 1.0,
+      "spr_ci": "(1.000, 1.000)"
+    },
+    {
+      "stage": "NAP only",
+      "csi": 0.699,
+      "csi_ci": "(0.682, 0.713)",
+      "csi_s": 0.929,
+      "spr": 1.005,
+      "spr_ci": "(0.985, 1.023)"
+    },
+    {
+      "stage": "NAP + QAT (no SPKD)",
+      "csi": 0.695,
+      "csi_ci": "(0.677, 0.710)",
+      "csi_s": 0.923,
+      "spr": 0.994,
+      "spr_ci": "(0.975, 1.012)"
+    },
+    {
+      "stage": "NAP+QAT+Hinton KD (beta=0)",
+      "csi": 0.912,
+      "csi_ci": "(0.903, 0.918)",
+      "csi_s": 0.974,
+      "spr": 0.991,
+      "spr_ci": "(0.988, 0.993)"
+    },
+    {
+      "stage": "NAP+QAT+SPKD (beta=0.3, full)",
+      "csi": 0.92,
+      "csi_ci": "(0.915, 0.924)",
+      "csi_s": 0.979,
+      "spr": 0.997,
+      "spr_ci": "(0.995, 1.000)"
+    }
+  ]
+}

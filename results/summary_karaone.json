@@ -1,0 +1,342 @@
+{
+  "dataset": "karaone",
+  "preset": "demo",
+  "seed": 42,
+  "n_subjects": 12,
+  "n_trials": 1152,
+  "n_channels": 64,
+  "n_classes": 11,
+  "teacher": {
+    "params": 2281131,
+    "size_mb": 8.701824188232422,
+    "accuracy": 80.93645484949833
+  },
+  "nac": {
+    "params": 2132765,
+    "size_mb": 2.034176826477051,
+    "accuracy": 81.93979933110369,
+    "size_reduction_pct": 76.62355866453964,
+    "csi": 0.9073721170425415,
+    "csi_s": 0.9779328460345087,
+    "spr": 1.0024367570877075,
+    "latency_ms": 15.276035079982648,
+    "sustained_drift_pct": 5.259391535128856,
+    "online_accuracy": 0.5953177257525084
+  },
+  "expert_layer": {
+    "temperature": 2.832956552505493,
+    "tau_alpha": 0.7815579771995544,
+    "ece_uncalibrated": 0.10907303379929584,
+    "ece_calibrated": 0.0787896921602779,
+    "conformal_coverage": 87.95986622073578,
+    "abstention_rate": 41.137123745819395,
+    "committed_accuracy": 95.45454545454545,
+    "raw_accuracy": 81.93979933110369,
+    "n_committed": 176,
+    "sweep": [
+      {
+        "tau_commit": 0.5,
+        "coverage": 71.57190635451505,
+        "committed_accuracy": 91.58878504672897,
+        "abstention": 28.428093645484953
+      },
+      {
+        "tau_commit": 0.6,
+        "coverage": 65.88628762541806,
+        "committed_accuracy": 92.89340101522842,
+        "abstention": 34.11371237458194
+      },
+      {
+        "tau_commit": 0.7,
+        "coverage": 58.862876254180605,
+        "committed_accuracy": 95.45454545454545,
+        "abstention": 41.137123745819395
+      },
+      {
+        "tau_commit": 0.8,
+        "coverage": 51.17056856187291,
+        "committed_accuracy": 96.07843137254902,
+        "abstention": 48.82943143812709
+      },
+      {
+        "tau_commit": 0.9,
+        "coverage": 40.468227424749166,
+        "committed_accuracy": 98.34710743801654,
+        "abstention": 59.53177257525084
+      }
+    ]
+  },
+  "xai": {
+    "jaccard_compressed": 0.19385364479105233,
+    "jaccard_full": 0.19060651284831837,
+    "ig_gradcam_spearman": 0.10979879648571186,
+    "eigencam_spearman": 0.12400743741661097,
+    "tf_null": {
+      "observed": 0.2104974091053009,
+      "null_mean": 0.13079576194286346,
+      "null_std": 0.028191788122057915,
+      "z": 2.827122688293457,
+      "p": 0.004975124378109453,
+      "n_shuffles": 200
+    },
+    "adebayo_full": {
+      "mode": "full",
+      "spearman_mean": -0.08791357632380987,
+      "spearman_std": 0.30844043214311817
+    },
+    "adebayo_cascade": {
+      "mode": "cascade",
+      "spearman_mean": -0.1084075933559368,
+      "spearman_std": 0.19738217979645278
+    },
+    "dose_response": {
+      "top": [
+        0.07291666666666663,
+        0.109375,
+        0.13541666666666663,
+        0.18229166666666663,
+        0.22395833333333337,
+        0.22916666666666663,
+        0.25,
+        0.24479166666666663,
+        0.296875,
+        0.3177083333333333
+      ],
+      "bottom": [
+        0.01041666666666663,
+        0.015625,
+        0.05208333333333337,
+        0.05729166666666663,
+        0.06770833333333337,
+        0.08333333333333337,
+        0.07291666666666663,
+        0.08333333333333337,
+        0.06770833333333337,
+        0.109375
+      ],
+      "random": [
+        0.01041666666666663,
+        0.03125,
+        0.03125,
+        0.02604166666666663,
+        0.07291666666666663,
+        0.09375,
+        0.08333333333333337,
+        0.13020833333333337,
+        0.08333333333333337,
+        0.13020833333333337
+      ]
+    },
+    "perm_top": [
+      "CP1",
+      "CP3",
+      "C3",
+      "Cz",
+      "C4"
+    ],
+    "perm_max_drop_pp": 7.8125
+  },
+  "statistics": {
+    "noninferiority": {
+      "mean": 0.009390935319377356,
+      "ci_low": -0.005482206581481339,
+      "margin": -0.01,
+      "noninferior": true
+    },
+    "wilcoxon": {
+      "statistic": 3.0,
+      "p": 0.22491588401596185
+    },
+    "cohens_dz": 0.4011738526643794
+  },
+  "benchmark": {
+    "teacher_latency": {
+      "mean_ms": 11.064934175019516,
+      "std_ms": 8.553527918912726,
+      "p95_ms": 35.480437949763655,
+      "p99_ms": 36.063947630655086,
+      "throughput_per_s": 90.37559412306547,
+      "n_runs": 200,
+      "warmup": 20
+    },
+    "nac_latency": {
+      "mean_ms": 15.276035079982648,
+      "std_ms": 9.615616486790676,
+      "p95_ms": 38.49998570012758,
+      "p99_ms": 38.89742252928954,
+      "throughput_per_s": 65.46201254214034,
+      "n_runs": 200,
+      "warmup": 20
+    },
+    "sustained": {
+      "runs": 300,
+      "first100_ms": 15.451969769919742,
+      "last100_ms": 16.26464936000957,
+      "drift_pct": 5.259391535128856
+    },
+    "online": {
+      "online_accuracy": 0.5953177257525084,
+      "n_windows": 5,
+      "window_len": 8,
+      "step": 2,
+      "starts": [
+        0,
+        2,
+        4,
+        6,
+        8
+      ]
+    }
+  },
+  "clinical_examples": [
+    {
+      "trial": 1,
+      "pred": "u",
+      "action": "spell:'U'"
+    },
+    {
+      "trial": 2,
+      "pred": "sh",
+      "action": "spell:'SH'"
+    },
+    {
+      "trial": 3,
+      "pred": "a",
+      "action": "spell:'A'"
+    },
+    {
+      "trial": 4,
+      "pred": "a",
+      "action": "spell:'A'"
+    },
+    {
+      "trial": 5,
+      "pred": "a",
+      "action": "spell:'A'"
+    }
+  ],
+  "table6": [
+    {
+      "configuration": "Full Model (FP32)",
+      "size_mb": 8.702,
+      "params_m": 2.281,
+      "latency_ms": 11.17,
+      "latency_p99_ms": 35.81,
+      "accuracy": 80.94,
+      "acc_drop": 0.0,
+      "csi": 1.0
+    },
+    {
+      "configuration": "Pruned (L1-only)",
+      "size_mb": 8.136,
+      "params_m": 2.133,
+      "latency_ms": 9.58,
+      "latency_p99_ms": 34.42,
+      "accuracy": 80.6,
+      "acc_drop": -0.33,
+      "csi": 0.808
+    },
+    {
+      "configuration": "Pruned + PTQ (INT8)",
+      "size_mb": 2.034,
+      "params_m": 2.133,
+      "latency_ms": 14.1,
+      "latency_p99_ms": 37.99,
+      "accuracy": 80.27,
+      "acc_drop": -0.67,
+      "csi": 0.807
+    },
+    {
+      "configuration": "Pruned + QAT (INT8)",
+      "size_mb": 2.034,
+      "params_m": 2.133,
+      "latency_ms": 14.52,
+      "latency_p99_ms": 38.58,
+      "accuracy": 81.27,
+      "acc_drop": 0.33,
+      "csi": 0.79
+    },
+    {
+      "configuration": "NAP only (proposed)",
+      "size_mb": 8.136,
+      "params_m": 2.133,
+      "latency_ms": 10.62,
+      "latency_p99_ms": 35.91,
+      "accuracy": 82.27,
+      "acc_drop": 1.34,
+      "csi": 0.728
+    },
+    {
+      "configuration": "NAP + QAT",
+      "size_mb": 2.034,
+      "params_m": 2.133,
+      "latency_ms": 15.22,
+      "latency_p99_ms": 38.77,
+      "accuracy": 81.94,
+      "acc_drop": 1.0,
+      "csi": 0.708
+    },
+    {
+      "configuration": "NAP + QAT + SPKD (Full NAC)",
+      "size_mb": 2.034,
+      "params_m": 2.133,
+      "latency_ms": 16.29,
+      "latency_p99_ms": 39.72,
+      "accuracy": 81.94,
+      "acc_drop": 1.0,
+      "csi": 0.907
+    },
+    {
+      "configuration": "Lottery Ticket (init prune)",
+      "size_mb": 8.136,
+      "params_m": 2.133,
+      "latency_ms": 9.98,
+      "latency_p99_ms": 34.75,
+      "accuracy": 72.91,
+      "acc_drop": -8.03,
+      "csi": -0.398
+    }
+  ],
+  "table16": [
+    {
+      "stage": "Full model (FP32)",
+      "csi": 1.0,
+      "csi_ci": "(1.000, 1.000)",
+      "csi_s": 1.0,
+      "spr": 1.0,
+      "spr_ci": "(1.000, 1.000)"
+    },
+    {
+      "stage": "NAP only",
+      "csi": 0.728,
+      "csi_ci": "(0.707, 0.741)",
+      "csi_s": 0.926,
+      "spr": 0.927,
+      "spr_ci": "(0.909, 0.944)"
+    },
+    {
+      "stage": "NAP + QAT (no SPKD)",
+      "csi": 0.708,
+      "csi_ci": "(0.685, 0.722)",
+      "csi_s": 0.919,
+      "spr": 0.919,
+      "spr_ci": "(0.900, 0.938)"
+    },
+    {
+      "stage": "NAP+QAT+Hinton KD (beta=0)",
+      "csi": 0.911,
+      "csi_ci": "(0.901, 0.916)",
+      "csi_s": 0.979,
+      "spr": 1.0,
+      "spr_ci": "(0.993, 1.007)"
+    },
+    {
+      "stage": "NAP+QAT+SPKD (beta=0.3, full)",
+      "csi": 0.907,
+      "csi_ci": "(0.895, 0.913)",
+      "csi_s": 0.978,
+      "spr": 1.002,
+      "spr_ci": "(0.995, 1.010)"
+    }
+  ]
+}
